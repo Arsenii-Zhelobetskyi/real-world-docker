@@ -1,0 +1,22 @@
+version: "3"
+services:
+  nginx:
+    volumes:
+      - ./nginx/nginx.dev.conf:/etc/nginx/conf.d/nginx.conf
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+    command: npm run start
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/usr/src/app #for taking needed code from local repository
+      - /app/node_modules #for taking node_modules from the container
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
+  api:
+    command: npm run dev
+    volumes:
+      - ./api/src:/usr/src/app/src
